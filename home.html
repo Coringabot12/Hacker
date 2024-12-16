@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Robótica</title>
+    <style>
+        /* Estilos gerais */
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: white;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Barra superior com estilo futurista */
+        .top-bar {
+            background: #111; /* Fundo escuro */
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3); /* Efeito de brilho */
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            border: 2px solid #00FFFF; /* Bordas metálicas */
+            border-radius: 10px;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        /* Animação de brilho, simulando um efeito robótico */
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF;
+            }
+            100% {
+                box-shadow: 0 0 15px #00FFFF, 0 0 30px #00FFFF, 0 0 60px #00FFFF;
+            }
+        }
+
+        /* Estilo futurista para o texto */
+        .top-bar .info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-bar .info span {
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        }
+
+        /* Ícone de "robô" pulsante */
+        .top-bar .icon {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #00FFFF;
+            border-radius: 50%;
+            background: #111;
+            animation: pulse 1.5s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top-bar .icon::after {
+            content: "🤖"; /* Emoji de robô */
+            font-size: 18px;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+            }
+        }
+
+        /* Estilo do iframe */
+        iframe {
+            margin-top: 70px; /* Altura da barra superior */
+            width: 100%;
+            height: calc(100vh - 70px); /* Tamanho ajustado para ocupar o restante da tela */
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra superior -->
+    <div class="top-bar">
+        <div class="info">
+            <div class="icon"></div> <!-- Ícone de robô pulsante -->
+            <span>Próximo horário: <span id="next-time"></span> - Cor: <span id="next-color"></span></span>
+        </div>
+    </div>
+
+    <!-- Iframe para carregar o site -->
+    <iframe src="https://bacelabet.co.mz" title="Bacelabet"></iframe>
+
+    <script>
+        // Cores disponíveis
+        const colors = [
+            { name: "Roxo", color: "#6A0DAD" },
+            { name: "Rosa", color: "#FF69B4" },
+            { name: "Azul", color: "#1E90FF" }
+        ];
+        let currentColorIndex = 0;
+
+        // Função para gerar um horário próximo
+        function getNextTime() {
+            const now = new Date();
+            const nextMinutes = now.getMinutes() + Math.floor(Math.random() * 5) + 1; // Adiciona 1 a 5 minutos aleatórios
+            const nextTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), nextMinutes);
+            return nextTime;
+        }
+
+        // Atualiza a barra superior com o próximo horário e cor
+        function updateNextTimeAndColor() {
+            const nextTime = getNextTime();
+
+            // Atualiza o próximo horário no formato HH:MM
+            const hours = nextTime.getHours().toString().padStart(2, "0");
+            const minutes = nextTime.getMinutes().toString().padStart(2, "0");
+            document.getElementById("next-time").textContent = `${hours}:${minutes}`;
+
+            // Atualiza a próxima cor
+            const nextColor = colors[currentColorIndex];
+            document.getElementById("next-color").textContent = nextColor.name;
+
+            // Define o próximo horário e a cor para troca
+            setTimeout(() => {
+                document.body.style.backgroundColor = nextColor.color;
+                currentColorIndex = (currentColorIndex + 1) % colors.length; // Alterna para a próxima cor
+                updateNextTimeAndColor(); // Chama novamente para o próximo horário
+            }, (nextTime - new Date())); // Espera até o próximo horário
+        }
+
+        // Inicializa ao carregar a página
+        updateNextTimeAndColor();
+    </script>
+</body>
+</html>
